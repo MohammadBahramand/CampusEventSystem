@@ -15,6 +15,6 @@ private:
   string location;
   int capacity;
 public:
-  
+  Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation 
 };
 #endif
