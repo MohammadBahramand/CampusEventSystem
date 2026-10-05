@@ -1,5 +1,5 @@
 #include "Event.h"
-#incldue <iostream>
+#include <iostream>
 using namespace std;
 
 Event::Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation, int eventCapacity)
