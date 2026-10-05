@@ -15,6 +15,14 @@ private:
   string location;
   int capacity;
 public:
-  Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation 
+  Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation, int eventCapacity);
+  string getEventID() const;
+  string getName() const;
+  string getDescription() const;
+  string getDate() const;
+  string getTime() const;
+  string getLocation() const;
+  int getCapacity() const;
+  void displayDetails() const;
 };
 #endif
