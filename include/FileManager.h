@@ -10,7 +10,7 @@ using Record = vector<string>;
 
 class FileManager {
 public:
-    FileManager(const string& dataDirectory = "data");
+    FileManager();
 
     bool readRecords(const string& filename, vector<Record>& records) const;
     bool writeRecords(const string& filename, const vector<Record>& records) const;
