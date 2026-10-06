@@ -23,6 +23,6 @@ public:
   string getTime() const;
   string getLocation() const;
   int getCapacity() const;
-  void displayDetails() const;
+  virtual void displayDetails() const;
 };
 #endif
