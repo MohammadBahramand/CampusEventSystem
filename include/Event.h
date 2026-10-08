@@ -15,13 +15,19 @@ private:
   string location;
   int capacity;
 public:
-  Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation, int eventCapacity);
-  string getEventID() const;
-  string getName() const;
-  string getDescription() const;
-  string getDate() const;
-  string getTime() const;
-  string getLocation() const;
+  Event(const string& id,
+          const string& eventName,
+          const string& eventDescription,
+          const string& eventDate,
+          const string& eventTime,
+          const string& eventLocation,
+          int eventCapacity);
+  const string& getEventID() const;
+  const string& getName() const;
+  const string& getDescription() const;
+  const string& getDate() const;
+  const string& getTime() const;
+  const string& getLocation() const;
   int getCapacity() const;
   virtual void displayDetails() const;
 };
