@@ -20,7 +20,7 @@ public:
           int eventCapacity,
           const string& club);
 
-    string getClubName() const;
+    const string& getClubName() const;
 
     void displayDetails() const override;
 };
