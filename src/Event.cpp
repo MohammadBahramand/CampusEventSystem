@@ -2,7 +2,13 @@
 #include <iostream>
 using namespace std;
 
-Event::Event(string id, string eventName, string eventDescription, string eventDate, string eventTime, string eventLocation, int eventCapacity)
+Event::Event(const string& id,
+             const string& eventName,
+             const string& eventDescription,
+             const string& eventDate,
+             const string& eventTime,
+             const string& eventLocation,
+             int eventCapacity)
 {
   eventID = id;
   name = eventName;
@@ -13,32 +19,32 @@ Event::Event(string id, string eventName, string eventDescription, string eventD
   capacity = eventCapacity;
 }
 //======================================
-string Event::getEventID() const
+const string& Event::getEventID() const
 {
     return eventID;
 }
 //======================================
-string Event::getName() const
+const string& Event::getName() const
 {
     return name;
 }
 //======================================
-string Event::getDescription() const
+const string& Event::getDescription() const
 {
     return description;
 }
 //======================================
-string Event::getDate() const
+const string& Event::getDate() const
 {
     return date;
 }
 //======================================
-string Event::getTime() const
+const string& Event::getTime() const
 {
     return time;
 }
 //======================================
-string Event::getLocation() const
+const string& Event::getLocation() const
 {
     return location;
 }
