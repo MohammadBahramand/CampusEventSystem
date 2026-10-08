@@ -11,10 +11,14 @@ private:
     string clubName;
 
 public:
-    ClubEvent(string id, string eventName, string eventDescription,
-              string eventDate, string eventTime,
-              string eventLocation, int eventCapacity,
-              string club);
+    ClubEvent(const string& id,
+          const string& eventName,
+          const string& eventDescription,
+          const string& eventDate,
+          const string& eventTime,
+          const string& eventLocation,
+          int eventCapacity,
+          const string& club);
 
     string getClubName() const;
 
