@@ -1,28 +1,36 @@
 #ifndef ORGANIZER_H
 #define ORGANIZER_H
 #include <string>
+using namespace std;
 
 class Organizer
 {
+   
     private:
-        std::string organizerId;
-        std::string name, email;
-        std::string department;
+        string organizerID;
+        string name;
+        string email;
+        string department;
 
     public:
+
+        // Constructors
         Organizer();
-        Organizer( const std::string& organizerId, const std::string& name,
-                   const std::string& email, const std::string& department );
+        Organizer( const string& organizerID, const string& name,
+                   const string& email, const string& department );
 
-        std::string getOrganizerId() const;
-        std::string getName() const;
-        std::string getEmail() const;
-        std::string getDepartment() const;
+        // Getters
+        string getOrganizerID() const;
+        string getName() const;
+        string getEmail() const;
+        string getDepartment() const;
 
-        void setName( const std::string& name );
-        void setEmail( const std::string& email );
-        void setDepartment( const std::string& department );
-
+        // Setters
+        void setName( const string& name );
+        void setEmail( const string& email );
+        void setDepartment( const string& department );
+        
+        // Displays organizer info
         void display() const;
 
 };
