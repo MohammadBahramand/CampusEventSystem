@@ -12,7 +12,7 @@ private:
   string speaker;
 public:
   AcademicEvent(const string& id,
-                const string& eventName;
+                const string& eventName,
                 const string& eventDescription,
                 const string& eventDate,
                 const string& eventTime,
