@@ -8,6 +8,7 @@ Event::Event(const string& id,
              const string& eventDate,
              const string& eventTime,
              const string& eventLocation,
+             const string& eventOrganizerID,
              int eventCapacity)
 {
   eventID = id;
@@ -16,6 +17,7 @@ Event::Event(const string& id,
   date = eventDate;
   location = eventLocation;
   time = eventTime;
+  organizerID = eventOrganizerID;
   capacity = eventCapacity;
 }
 //======================================
@@ -54,6 +56,11 @@ int Event::getCapacity() const
     return capacity;
 }
 //======================================
+const string& Event::getOrganizerID() const
+{
+    return organizerID;
+}
+//======================================
 void Event::displayDetails() const
 {
     cout << "Event ID: " << eventID << endl;
@@ -63,5 +70,7 @@ void Event::displayDetails() const
     cout << "Time: " << time << endl;
     cout << "Location: " << location << endl;
     cout << "Capacity: " << capacity << endl;
+    cout << "Organizer ID: " << organizerID << endl;
 }
 //======================================
+
