@@ -1,6 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+#include "Organizer.h"
 #include  <string>
 using namespace std;
 
@@ -14,6 +15,7 @@ private:
   string time;
   string location;
   int capacity;
+  const Organizer& organizer;
 public:
   Event(const string& id,
           const string& eventName,
@@ -29,6 +31,7 @@ public:
   const string& getTime() const;
   const string& getLocation() const;
   int getCapacity() const;
+  const Organizer& getOrganizer() const;
   virtual void displayDetails() const;
 };
 #endif
