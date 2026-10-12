@@ -1,4 +1,4 @@
-#include "AcademicEvent.h:
+#include "AcademicEvent.h"
 #include <iostream>
 
 using namespace std;
