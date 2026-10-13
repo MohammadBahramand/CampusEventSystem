@@ -91,3 +91,71 @@ bool FileManager::saveStudents(const EventSystem& system) const
     }
     return writeRecords("students.txt", rows);
 }
+
+bool FileManager::loadOrganizers(EventSystem& system) const
+{
+    vector<Record> rows;
+    if (!readRecords("organizers.txt", rows))
+    {
+        return false;
+    }
+
+    for (int i = 0; i < rows.size(); i++)
+    {
+        if (rows[i].size() != 4)
+        {
+            cout << "Skipping bad line in organizers.txt" << endl;
+            continue;
+        }
+        system.addOrganizer(rows[i][0], rows[i][1], rows[i][2], rows[i][3]);
+    }
+    return true;
+}
+
+bool FileManager::saveOrganizers(const EventSystem& system) const
+{
+    vector<Record> rows;
+    const vector<unique_ptr<Organizer>>& organizers = system.getOrganizers();
+
+    for (int i = 0; i < organizers.size(); i++)
+    {
+        rows.push_back({ organizers[i]->getOrganizerID(), organizers[i]->getName(),
+                         organizers[i]->getEmail(), organizers[i]->getDepartment() });
+    }
+    return writeRecords("organizers.txt", rows);
+}
+
+bool FileManager::loadRegistrations(RegistrationManager& manager) const
+{
+    vector<Record> rows;
+    if (!readRecords("registrations.txt", rows))
+    {
+        return false;
+    }
+
+    for (int i = 0; i < rows.size(); i++)
+    {
+        if (rows[i].size() != 4)
+        {
+            cout << "Skipping bad line in registrations.txt" << endl;
+            continue;
+        }
+        bool active = (rows[i][3] == "1");
+        manager.addLoadedRegistration(Registration(rows[i][0], rows[i][1], rows[i][2], active));
+    }
+    return true;
+}
+
+bool FileManager::saveRegistrations(const RegistrationManager& manager) const
+{
+    vector<Record> rows;
+    const vector<Registration>& registrations = manager.getAllRegistrations();
+
+    for (int i = 0; i < registrations.size(); i++)
+    {
+        string active = registrations[i].isActive() ? "1" : "0";
+        rows.push_back({ registrations[i].getStudentId(), registrations[i].getEventId(),
+                         registrations[i].getRegistrationDate(), active });
+    }
+    return writeRecords("registrations.txt", rows);
+}

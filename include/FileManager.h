@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "EventSystem.h"
+#include "RegistrationManager.h"
 
 using namespace std;
 
@@ -19,6 +20,11 @@ public:
     bool loadStudents(EventSystem& system) const;
     bool saveStudents(const EventSystem& system)const;
 
+    bool loadOrganizers(EventSystem& system) const;
+    bool saveOrganizers(const EventSystem& system) const;
+
+    bool loadRegistrations(RegistrationManager& manager) const;
+    bool saveRegistrations(const RegistrationManager& manager) const;
 private:
     string dataDirectory;
 };
