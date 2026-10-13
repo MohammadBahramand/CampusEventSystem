@@ -15,7 +15,7 @@ public:
     // Constructor: makes a social event with all its info
     SocialEvent(const string& eventID, const string& name,
                 const string& description, const string& date,
-                const string& time, const string& location,
+                const string& time, const string& location, const string& eventOrganizerID,
                 int capacity, const string& theme,
                 bool foodProvided);
 
