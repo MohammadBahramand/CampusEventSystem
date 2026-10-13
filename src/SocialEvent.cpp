@@ -12,10 +12,10 @@ using namespace std;
 //======================================
 SocialEvent::SocialEvent(const string& eventID, const string& name,
                          const string& description, const string& date,
-                         const string& time, const string& location,
-                         int capacity, const string& theme,
+                         const string& time, const string& location, const string& eventOrganizerID,
+                         int capacity, const string& theme, 
                          bool foodProvided)
-    : Event(eventID, name, description, date, time, location, capacity)
+    : Event(eventID, name, description, date, time, location, eventOrganizerID, capacity)
 {
     this->theme = theme;
     this->foodProvided = foodProvided;
