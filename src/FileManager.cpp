@@ -1,4 +1,5 @@
 #include "FileManager.h"
+#include <iostream>
 #include <fstream>
 #include <sstream>
 
@@ -56,4 +57,37 @@ bool FileManager::writeRecords(const string& fileName, const vector<Record>& rec
         outFile << endl;
     }
     return true;
+}
+
+bool FileManager::loadStudents(EventSystem& system) const
+{
+    vector<Record> rows;
+    if (!readRecords("students.txt", rows))
+    {
+        return false;   // no file yet, start with no students
+    }
+
+    for (int i = 0; i < rows.size(); i++)
+    {
+        if (rows[i].size() != 4)
+        {
+            cout << "Skipping bad line in students.txt" << endl;
+            continue;
+        }
+        system.addStudent(rows[i][0], rows[i][1], rows[i][2], rows[i][3]);
+    }
+    return true;
+}
+
+bool FileManager::saveStudents(const EventSystem& system) const
+{
+    vector<Record> rows;
+    const vector<unique_ptr<Student>>& students = system.getStudents();
+
+    for (int i = 0; i < students.size(); i++)
+    {
+        rows.push_back({ students[i]->getId(), students[i]->getName(),
+                         students[i]->getEmail(), students[i]->getMajor() });
+    }
+    return writeRecords("students.txt", rows);
 }

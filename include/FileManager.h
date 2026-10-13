@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "EventSystem.h"
 
 using namespace std;
 
@@ -14,6 +15,9 @@ public:
 
     bool readRecords(const string& filename, vector<Record>& records) const;
     bool writeRecords(const string& filename, const vector<Record>& records) const;
+
+    bool loadStudents(EventSystem& system) const;
+    bool saveStudents(const EventSystem& system)const;
 
 private:
     string dataDirectory;
