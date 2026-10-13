@@ -19,7 +19,7 @@ public:
     CareerEvent(const string& eventID, const string& name,
                 const string& description, const string& date,
                 const string& time, const string& location,
-                int capacity, const string& companyName,
+                int capacity, const string& companyName, const string& eventOrganizerID,
                 const string& recruiterName);
 
     // Accessors: returns the data without changing it
