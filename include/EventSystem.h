@@ -9,6 +9,7 @@
 #include <memory>  
 #include <string>
 #include "Student.h"
+#include "Organizer.h"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ private:
     //to manage memory automatically.
     vector<unique_ptr<Student>> students;
 
+     vector<unique_ptr<Organizer>> organizers;
 public:
     //Adds a new student.
     //Returns true if added, false if that ID 
@@ -38,6 +40,23 @@ public:
 
    
     const vector<unique_ptr<Student>>& getStudents() const;
+
+
+    //=====Organizers========
+    //Returns true if added, false if the organizer ID already exists.
+    bool addOrganizer(const string& id, const string& name,
+                      const string& email, const string& department);
+
+    //Returns a pointer to the organizer, or nullptr if not found.
+
+    Organizer* findOrganizer(const string& id) const;
+
+    void displayOrganizer(const string& id) const;
+    void displayAllOrganizers() const;
+
+    //Read-only access to the organizers list
+    const vector<unique_ptr<Organizer>>& getOrganizers() const;
+
 };
 
 #endif
