@@ -18,8 +18,8 @@ public:
     // Constructor: creates a career event with all its info
     CareerEvent(const string& eventID, const string& name,
                 const string& description, const string& date,
-                const string& time, const string& location,
-                int capacity, const string& companyName, const string& eventOrganizerID,
+                const string& time, const string& location, const string& eventOrganizerID,
+                int capacity, const string& companyName,
                 const string& recruiterName);
 
     // Accessors: returns the data without changing it
