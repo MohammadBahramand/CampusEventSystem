@@ -17,6 +17,7 @@ public:
                 const string& eventDate,
                 const string& eventTime,
                 const string& eventLocation,
+                const string& eventOrganizerID,
                 int eventCapacity,
                 const string& eventDepartment,
                 const string& eventSpeaker);
