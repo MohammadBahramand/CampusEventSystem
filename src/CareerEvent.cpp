@@ -12,10 +12,10 @@ using namespace std;
 //======================================
 CareerEvent::CareerEvent(const string& eventID, const string& name,
                          const string& description, const string& date,
-                         const string& time, const string& location,
+                         const string& time, const string& location, const string& eventOrganizerID,
                          int capacity, const string& companyName,
                          const string& recruiterName)
-    : Event(eventID, name, description, date, time, location, capacity)
+    : Event(eventID, name, description, date, time, location, eventOrganizerID, capacity)
 {
     this->companyName = companyName;
     this->recruiterName = recruiterName;
