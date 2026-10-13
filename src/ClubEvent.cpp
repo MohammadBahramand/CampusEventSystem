@@ -8,11 +8,12 @@ ClubEvent::ClubEvent(const string& id,
                      const string& eventDate,
                      const string& eventTime,
                      const string& eventLocation,
+                     const string& eventOrganizerID,
                      int eventCapacity,
                      const string& club)
     : Event(id, eventName, eventDescription,
             eventDate, eventTime,
-            eventLocation, eventCapacity)
+            eventLocation, eventOrganizerID, eventCapacity)
 {
     clubName = club;
 }
