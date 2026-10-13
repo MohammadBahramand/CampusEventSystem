@@ -16,6 +16,7 @@ private:
   int capacity;
   string organizerID;
 public:
+  virtual ~Event() = default;
   Event(const string& id,
           const string& eventName,
           const string& eventDescription,
