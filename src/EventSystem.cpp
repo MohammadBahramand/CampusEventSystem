@@ -484,3 +484,27 @@ int EventSystem::searchEventsByName(const string& text) const {
     }
     return count;
 }
+
+//===========displayEventsByOrganizer=============
+//Looks up the organizer first, then prints one short line for every
+//event that stores that organizer's ID.
+void EventSystem::displayEventsByOrganizer(const string& organizerId) const {
+    //nothing to show if the organizer does not exist
+    if (findOrganizer(organizerId) == nullptr) {
+        cout << "Organizer not found." << endl;
+        return;
+    }
+
+    bool foundAny = false;
+    for (const auto& event : events) {
+        //an event stores only its organizer's ID, so we compare IDs
+        if (event->getOrganizerID() == organizerId) {
+            cout << "- " << event->getEventID() << ": " << event->getName() << endl;
+            foundAny = true;
+        }
+    }
+
+    if (!foundAny) {
+        cout << "This organizer has no events." << endl;
+    }
+}
