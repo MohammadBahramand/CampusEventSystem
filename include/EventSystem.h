@@ -10,6 +10,7 @@
 #include <string>
 #include "Student.h"
 #include "Organizer.h"
+#include "Event.h"
 
 using namespace std;
 
@@ -20,6 +21,8 @@ private:
     vector<unique_ptr<Student>> students;
 
      vector<unique_ptr<Organizer>> organizers;
+
+     vector<unique_ptr<Event>> events;
 public:
     //Adds a new student.
     //Returns true if added, false if that ID 
@@ -56,7 +59,19 @@ public:
 
     //Read-only access to the organizers list
     const vector<unique_ptr<Organizer>>& getOrganizers() const;
+    //=======Events======
+    //Returns false, and adds nothing if the event ID
+    //already exists or its organizer ID is not a known organizer
+    bool addEvent(unique_ptr<Event> event);
 
+    //Returns a pointer to the event, or nullptr if not found
+    
+    Event* findEvent(const string& id) const;
+    void displayEvent(const string& id) const;
+    void displayAllEvents() const;
+
+    //Read-only access for FileManager code and reports
+    const vector<unique_ptr<Event>>& getEvents() const;
 };
 
 #endif

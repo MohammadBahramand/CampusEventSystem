@@ -151,3 +151,89 @@ void EventSystem::displayAllOrganizers() const {
 const vector<unique_ptr<Organizer>>& EventSystem::getOrganizers() const {
     return organizers;
 }
+
+// ============================================================
+// EVENTS
+// ============================================================
+
+// ------------------------------------------------------------
+// addEvent
+// Takes ownership of an event that the caller already built.
+// Rejects it if the ID is taken or the organizer does not exist.
+// ------------------------------------------------------------
+bool EventSystem::addEvent(unique_ptr<Event> event) {
+    if (event == nullptr) {
+        cout << "Error: no event was provided." << endl;
+        return false;
+    }
+
+    // Duplicate ID check, same rule as students and organizers.
+    if (findEvent(event->getEventID()) != nullptr) {
+        cout << "Error: an event with ID " << event->getEventID() << " already exists." << endl;
+        return false;
+    }
+
+    // An event stores only its organizer's ID, so we check here that
+    // this organizer really exists.
+    if (findOrganizer(event->getOrganizerID()) == nullptr) {
+        cout << "Error: organizer " << event->getOrganizerID() << " does not exist." << endl;
+        return false;
+    }
+
+    // std::move hands ownership of the event into the vector. The
+    // parameter is empty afterward, which is what unique_ptr requires.
+    events.push_back(std::move(event));
+    return true;
+}
+
+// ------------------------------------------------------------
+// findEvent
+// Linear search by ID. Returns nullptr when nothing matches.
+// ------------------------------------------------------------
+Event* EventSystem::findEvent(const string& id) const {
+    for (const auto& e : events) {
+        if (e->getEventID() == id) {
+            return e.get();   // plain pointer, ownership stays here
+        }
+    }
+    return nullptr;
+}
+
+// ------------------------------------------------------------
+// displayEvent
+// Prints one event. displayDetails() is virtual, so the right
+// subclass version runs even though we only hold an Event pointer.
+// ------------------------------------------------------------
+void EventSystem::displayEvent(const string& id) const {
+    Event* e = findEvent(id);
+    if (e == nullptr) {
+        cout << "Event not found." << endl;
+        return;
+    }
+    e->displayDetails();
+}
+
+// ------------------------------------------------------------
+// displayAllEvents
+// Prints every event, numbered (polymorphism again).
+// ------------------------------------------------------------
+void EventSystem::displayAllEvents() const {
+    if (events.empty()) {
+        cout << "No events in the system." << endl;
+        return;
+    }
+    int count = 1;
+    for (const auto& e : events) {
+        cout << "--- Event " << count << " ---" << endl;
+        e->displayDetails();
+        count++;
+    }
+}
+
+// ------------------------------------------------------------
+// getEvents
+// Read-only access for saving to a file and for reports.
+// ------------------------------------------------------------
+const vector<unique_ptr<Event>>& EventSystem::getEvents() const {
+    return events;
+}
