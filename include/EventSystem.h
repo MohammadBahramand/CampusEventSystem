@@ -112,6 +112,12 @@ public:
     //lower case). Returns how many events matched.
     int searchEventsByName(const string& text) const;
 
+    //===========Events by organizer=============
+    //Prints a short list (ID and name) of every event run by the
+    //organizer with this ID, or a message if the organizer does not
+    //exist or has no events.
+    void displayEventsByOrganizer(const string& organizerId) const;
+
 };
 
 #endif
