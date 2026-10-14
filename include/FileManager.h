@@ -25,6 +25,9 @@ public:
 
     bool loadRegistrations(RegistrationManager& manager) const;
     bool saveRegistrations(const RegistrationManager& manager) const;
+
+    bool loadEvents(EventSystem& system) const;
+    bool saveEvents(const EventSystem& system) const;
 private:
     string dataDirectory;
 };
