@@ -441,3 +441,46 @@ void EventSystem::reportStudentsInMultipleEvents() const {
         cout << "No students are registered for multiple events." << endl;
     }
 }
+
+//===========Search=============
+//Helper used only in this file. Returns a lower-case copy of the text
+//so the search ignores upper and lower case.
+//(a plain loop, so no extra #include is needed)
+static string toLowerCopy(const string& text) {
+    string result = text;
+    for (size_t i = 0; i < result.size(); i++) {
+        if (result[i] >= 'A' && result[i] <= 'Z') {
+            result[i] = result[i] - 'A' + 'a';
+        }
+    }
+    return result;
+}
+
+//===========searchEventsByName=============
+//Prints every event whose name contains the search text and returns
+//how many matched. displayDetails() is virtual, so each event type
+//prints its own details.
+int EventSystem::searchEventsByName(const string& text) const {
+    //an empty search would match every event, so ask for text instead
+    if (text.empty()) {
+        cout << "Please enter text to search for." << endl;
+        return 0;
+    }
+
+    string searchText = toLowerCopy(text);
+    int count = 0;
+
+    for (const auto& event : events) {
+        //find returns string::npos when the text is not inside the name
+        if (toLowerCopy(event->getName()).find(searchText) != string::npos) {
+            count++;
+            cout << "--- Match " << count << " ---" << endl;
+            event->displayDetails();
+        }
+    }
+
+    if (count == 0) {
+        cout << "No events found matching \"" << text << "\"." << endl;
+    }
+    return count;
+}
