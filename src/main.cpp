@@ -174,38 +174,14 @@ void showReports(const EventSystem& system)
     }
 }
 
-void loadAll(const FileManager& files, EventSystem& system)
-{
-    // Order matters: events need their organizer, registrations need students and events.
-    files.loadOrganizers(system);
-    files.loadStudents(system);
-    files.loadEvents(system);
-    files.loadRegistrations(system.getRegistrationManager());
-}
-
-void saveAll(const FileManager& files, const EventSystem& system)
-{
-    bool ok = files.saveOrganizers(system)
-           && files.saveStudents(system)
-           && files.saveEvents(system)
-           && files.saveRegistrations(system.getRegistrationManager());
-
-    if (ok)
-    {
-        cout << "Data saved." << endl;
-    }
-    else
-    {
-        cout << "Error: could not save data. Make sure the data folder exists." << endl;
-    }
-}
-
 //=================== Main ===================
 int main()
 {
     EventSystem system;
     FileManager files;
-    loadAll(files, system);
+
+    // Load everything saved from last time (FileManager handles the load order)
+    files.loadAll(system);
 
     int choice;
 
@@ -322,7 +298,15 @@ int main()
 
             // Exit
             case 0:
-                saveAll(files, system);
+                // Save everything before closing
+                if (files.saveAll(system))
+                {
+                    cout << "Data saved." << endl;
+                }
+                else
+                {
+                    cout << "Error: could not save data. Make sure the data folder exists." << endl;
+                }
                 cout << "Exiting program..." << endl;
                 break;
 
