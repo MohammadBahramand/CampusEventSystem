@@ -205,15 +205,13 @@ bool FileManager::loadEvents(EventSystem& system) const
         }
 
         int capacity;
-        try
-        {
-            capacity = stoi(r[8]);
-        }
-        catch (...)
+        stringstream ss(r[8]);
+        if (!(ss >> capacity))
         {
             cout << "Skipping event with bad capacity in events.txt" << endl;
             continue;
         }
+
 
         string type = r[0];
         if (type == "ACADEMIC" && r.size() == 11)
