@@ -1,0 +1,7 @@
+ACADEMIC|E101|Introduction to Robotics|Hands-on intro to building and programming small robots|2026-10-15|14:00|Engineering Building 201|O1|30|Engineering|Dr. Alan Reyes
+CAREER|E102|Resume Workshop|Bring your resume and get it reviewed by a recruiter|2026-10-20|11:00|Student Services Center 110|O2|25|Orange Coast Tech|Lisa Park
+CLUB|E103|Cybersecurity Club Meeting|Weekly meeting with a capture-the-flag practice round|2026-10-16|16:30|B-Building 250|O3|40|Cybersecurity Club
+SOCIAL|E104|Fall Game Night|Board games, video games and snacks|2026-10-24|18:00|Student Center Lounge|O3|50|Game night|1
+CAREER|E105|Tech Career Fair|Meet local tech employers hiring interns|2026-11-05|10:00|Main Gym|O2|100|Irvine Software Group|Kevin Tran
+ACADEMIC|E106|Calculus Study Session|Small group review before the midterm|2026-10-18|13:00|Library Room 3|O1|3|Mathematics|Prof. Dana Kim
+CLUB|E107|Robotics Club Build Day|Work on the club's competition robot|2026-10-25|10:00|Engineering Building 105|O1|12|Robotics Club

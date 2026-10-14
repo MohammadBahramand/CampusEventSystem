@@ -1,3 +1,11 @@
+//================FileManager.cpp==================
+//Reads and writes the four data files:
+//    students.txt       id|name|email|major
+//    organizers.txt     id|name|email|department
+//    events.txt         TYPE|id|name|description|date|time|location|organizerID|capacity|extra fields
+//    registrations.txt  studentId|eventId|date|active (1 or 0)
+//==================================================
+
 #include "FileManager.h"
 #include "AcademicEvent.h"
 #include "CareerEvent.h"
@@ -7,11 +15,14 @@
 #include <fstream>
 #include <sstream>
 
+//all files are kept in the data/ folder
 FileManager::FileManager()
 {
     this->dataDirectory = "data/";
 }
 
+//reads file one line at a time and splits each line on '|'
+//returns false if file cannot be opened
 bool FileManager::readRecords(const string& fileName, vector<Record>& records) const
 {
     ifstream inFile((dataDirectory + fileName));
@@ -40,6 +51,7 @@ bool FileManager::readRecords(const string& fileName, vector<Record>& records) c
     return true;
 }
 
+//writes each record as one line with '|' between fields
 bool FileManager::writeRecords(const string& fileName, const vector<Record>& records) const
 {
     ofstream outFile((dataDirectory + fileName));
@@ -63,6 +75,7 @@ bool FileManager::writeRecords(const string& fileName, const vector<Record>& rec
     return true;
 }
 
+//loads students from students.txt and adds them to the EventSystem
 bool FileManager::loadStudents(EventSystem& system) const
 {
     vector<Record> rows;
@@ -83,6 +96,7 @@ bool FileManager::loadStudents(EventSystem& system) const
     return true;
 }
 
+//turns every student into a record and writes them to students.txt
 bool FileManager::saveStudents(const EventSystem& system) const
 {
     vector<Record> rows;
@@ -96,6 +110,7 @@ bool FileManager::saveStudents(const EventSystem& system) const
     return writeRecords("students.txt", rows);
 }
 
+//same idea as loadStudents, but for organizers
 bool FileManager::loadOrganizers(EventSystem& system) const
 {
     vector<Record> rows;
@@ -116,6 +131,7 @@ bool FileManager::loadOrganizers(EventSystem& system) const
     return true;
 }
 
+//same idea as saveStudents, but for organizers
 bool FileManager::saveOrganizers(const EventSystem& system) const
 {
     vector<Record> rows;
@@ -129,6 +145,7 @@ bool FileManager::saveOrganizers(const EventSystem& system) const
     return writeRecords("organizers.txt", rows);
 }
 
+//registrations live in RegistrationManager, so these take that instead of EventSystem
 bool FileManager::loadRegistrations(RegistrationManager& manager) const
 {
     vector<Record> rows;
@@ -150,6 +167,8 @@ bool FileManager::loadRegistrations(RegistrationManager& manager) const
     return true;
 }
 
+
+//turns every registration into a record and writes them to registrations.txt
 bool FileManager::saveRegistrations(const RegistrationManager& manager) const
 {
     vector<Record> rows;
@@ -164,6 +183,9 @@ bool FileManager::saveRegistrations(const RegistrationManager& manager) const
     return writeRecords("registrations.txt", rows);
 }
 
+//The first field is the event type. It decides which subclass to build and how many fields the line should have:
+//Every event is handed to EventSystem as a unique_ptr, so EventSystem becomes its owner.
+//==================================================
 bool FileManager::loadEvents(EventSystem& system) const
 {
     vector<Record> rows;
@@ -183,15 +205,13 @@ bool FileManager::loadEvents(EventSystem& system) const
         }
 
         int capacity;
-        try
-        {
-            capacity = stoi(r[8]);
-        }
-        catch (...)
+        stringstream ss(r[8]);
+        if (!(ss >> capacity))
         {
             cout << "Skipping event with bad capacity in events.txt" << endl;
             continue;
         }
+
 
         string type = r[0];
         if (type == "ACADEMIC" && r.size() == 11)
@@ -222,6 +242,7 @@ bool FileManager::loadEvents(EventSystem& system) const
     return true;
 }
 
+//turns every event into a record and writes them to events.txt
 bool FileManager::saveEvents(const EventSystem& system) const
 {
     vector<Record> rows;
@@ -231,7 +252,6 @@ bool FileManager::saveEvents(const EventSystem& system) const
     {
         Event* e = events[i].get();
 
-        // fields every event has
         Record row = { "", e->getEventID(), e->getName(), e->getDescription(),
                        e->getDate(), e->getTime(), e->getLocation(),
                        e->getOrganizerID(), to_string(e->getCapacity()) };
@@ -267,4 +287,23 @@ bool FileManager::saveEvents(const EventSystem& system) const
         rows.push_back(row);
     }
     return writeRecords("events.txt", rows);
+}
+
+//Loads every file in the order the data depends on each other (organizers->students->events->registrations).
+void FileManager::loadAll(EventSystem& system) const
+{
+    loadOrganizers(system);
+    loadStudents(system);
+    loadEvents(system);
+    loadRegistrations(system.getRegistrationManager());
+}
+
+
+//Saves every file and returns false if any file could not be written.
+bool FileManager::saveAll(const EventSystem& system) const
+{
+    return saveOrganizers(system)
+        && saveStudents(system)
+        && saveEvents(system)
+        && saveRegistrations(system.getRegistrationManager());
 }
