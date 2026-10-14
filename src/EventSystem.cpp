@@ -343,3 +343,144 @@ RegistrationManager& EventSystem::getRegistrationManager() {
 const RegistrationManager& EventSystem::getRegistrationManager() const {
     return registrationManager;
 }
+
+//===========Reports=============
+//Each report loops over the stored data and asks RegistrationManager
+//for the numbers. Nothing is changed, so every report is const.
+
+//===========reportEventsWithSpace=============
+//Capacity minus active registrations.
+//Prints only the events where that number is greater than 0.
+void EventSystem::reportEventsWithSpace() const {
+    cout << "=== Events With Available Capacity ===" << endl;
+    bool foundAny = false;
+
+    for (const auto& event : events) {
+        //registered = active registrations for this event
+        int registered = registrationManager.getRegistrationCount(event->getEventID());
+        int remaining = event->getCapacity() - registered;
+
+        if (remaining > 0) {
+            foundAny = true;
+            cout << event->getName() << endl;
+            cout << "  Capacity: " << event->getCapacity() << endl;
+            cout << "  Registered: " << registered << endl;
+            cout << "  Spaces Remaining: " << remaining << endl;
+        }
+    }
+
+    //tell the user when nothing matched instead of printing nothing
+    if (!foundAny) {
+        cout << "No events have available capacity." << endl;
+    }
+}
+
+//===========reportFullEvents=============
+//Prints the events where the active registrations have reached
+//the capacity.
+void EventSystem::reportFullEvents() const {
+    cout << "=== Full Events ===" << endl;
+    bool foundAny = false;
+
+    for (const auto& event : events) {
+        int registered = registrationManager.getRegistrationCount(event->getEventID());
+
+        if (registered >= event->getCapacity()) {
+            foundAny = true;
+            cout << event->getName() << " (" << registered << "/"
+                 << event->getCapacity() << ")" << endl;
+        }
+    }
+
+    if (!foundAny) {
+        cout << "No events are full." << endl;
+    }
+}
+
+//===========reportRegistrationsPerEvent=============
+//Prints one line per event with its number of active registrations.
+void EventSystem::reportRegistrationsPerEvent() const {
+    cout << "=== Registrations Per Event ===" << endl;
+
+    if (events.empty()) {
+        cout << "No events in the system." << endl;
+        return;
+    }
+
+    for (const auto& event : events) {
+        cout << event->getName() << ": "
+             << registrationManager.getRegistrationCount(event->getEventID())
+             << " registered" << endl;
+    }
+}
+
+//===========reportStudentsInMultipleEvents=============
+//For every student, asks for their active event IDs.
+//Prints the student and the event names when there are two or more.
+void EventSystem::reportStudentsInMultipleEvents() const {
+    cout << "=== Students Registered for Multiple Events ===" << endl;
+    bool foundAny = false;
+
+    for (const auto& student : students) {
+        //the manager returns event IDs, so we look up each name below
+        vector<string> eventIds =
+            registrationManager.getEventIdsForStudent(student->getId());
+
+        if (eventIds.size() >= 2) {
+            foundAny = true;
+            cout << student->getName() << " (" << eventIds.size() << " events)" << endl;
+            for (const string& id : eventIds) {
+                Event* event = findEvent(id);
+                //fall back to the ID if the event can't be found
+                cout << "  - " << (event != nullptr ? event->getName() : id) << endl;
+            }
+        }
+    }
+
+    if (!foundAny) {
+        cout << "No students are registered for multiple events." << endl;
+    }
+}
+
+//===========Search=============
+//Helper used only in this file. Returns a lower-case copy of the text
+//so the search ignores upper and lower case.
+//(a plain loop, so no extra #include is needed)
+static string toLowerCopy(const string& text) {
+    string result = text;
+    for (size_t i = 0; i < result.size(); i++) {
+        if (result[i] >= 'A' && result[i] <= 'Z') {
+            result[i] = result[i] - 'A' + 'a';
+        }
+    }
+    return result;
+}
+
+//===========searchEventsByName=============
+//Prints every event whose name contains the search text and returns
+//how many matched. displayDetails() is virtual, so each event type
+//prints its own details.
+int EventSystem::searchEventsByName(const string& text) const {
+    //an empty search would match every event, so ask for text instead
+    if (text.empty()) {
+        cout << "Please enter text to search for." << endl;
+        return 0;
+    }
+
+    string searchText = toLowerCopy(text);
+    int count = 0;
+
+    for (const auto& event : events) {
+        //find returns string::npos when the text is not inside the name
+        if (toLowerCopy(event->getName()).find(searchText) != string::npos) {
+            count++;
+            cout << "--- Match " << count << " ---" << endl;
+            event->displayDetails();
+        }
+    }
+
+    if (count == 0) {
+        cout << "No events found matching \"" << text << "\"." << endl;
+    }
+    return count;
+}

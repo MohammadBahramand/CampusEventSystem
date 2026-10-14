@@ -94,6 +94,24 @@ public:
     RegistrationManager& getRegistrationManager();
     const RegistrationManager& getRegistrationManager() const;
 
+    //===========Reports==========
+    //Events that still have open spots (shows registered / capacity).
+    void reportEventsWithSpace() const;
+
+    //Events that have no spots left.
+    void reportFullEvents() const;
+
+    //Every event with how many students are registered.
+    void reportRegistrationsPerEvent() const;
+
+    //Students registered for two or more events.
+    void reportStudentsInMultipleEvents() const;
+
+    //===========Search=============
+    //Prints every event whose name contains the text (ignores upper and
+    //lower case). Returns how many events matched.
+    int searchEventsByName(const string& text) const;
+
 };
 
 #endif
