@@ -1,0 +1,6 @@
+S1001|Maria Lopez|mlopez@student.ivc.edu|Computer Science
+S1002|David Chen|dchen@student.ivc.edu|Mathematics
+S1003|Sarah Johnson|sjohnson@student.ivc.edu|Business
+S1004|Aisha Rahman|arahman@student.ivc.edu|Biology
+S1005|Tyler Brooks|tbrooks@student.ivc.edu|Engineering
+S1006|Emily Park|epark@student.ivc.edu|Psychology
