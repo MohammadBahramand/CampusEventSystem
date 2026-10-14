@@ -106,6 +106,12 @@ public:
 
     //Students registered for two or more events.
     void reportStudentsInMultipleEvents() const;
+
+    //===========Search=============
+    //Prints every event whose name contains the text (ignores upper and
+    //lower case). Returns how many events matched.
+    int searchEventsByName(const string& text) const;
+
 };
 
 #endif
