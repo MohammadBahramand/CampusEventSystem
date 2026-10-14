@@ -11,6 +11,7 @@
 #include "Student.h"
 #include "Organizer.h"
 #include "Event.h"
+#include "RegistrationManager.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ private:
      vector<unique_ptr<Organizer>> organizers;
 
      vector<unique_ptr<Event>> events;
+     RegistrationManager registrationManager;
 public:
     //Adds a new student.
     //Returns true if added, false if that ID 
@@ -72,6 +74,26 @@ public:
 
     //Read-only access for FileManager code and reports
     const vector<unique_ptr<Event>>& getEvents() const;
+
+    //===========Registrations=============
+    //Registers a student for an event, prints the outcome and returns
+    //true only if success
+    bool registerStudent(const string& studentId, const string& eventId,
+                         const string& date);
+
+    //Cancels an existing registration, returns false if none exists.
+    bool cancelRegistration(const string& studentId, const string& eventId);
+
+    void displayStudentRegistrations(const string& studentId) const;
+    void displayEventAttendees(const string& eventId) const;
+
+    //active registrations for an event
+    int getRegisteredCount(const string& eventId) const;
+
+    //saving and loading registrations
+    RegistrationManager& getRegistrationManager();
+    const RegistrationManager& getRegistrationManager() const;
+
 };
 
 #endif

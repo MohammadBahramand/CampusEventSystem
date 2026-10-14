@@ -77,36 +77,33 @@ void EventSystem::displayAllStudents() const {
 const vector<unique_ptr<Student>>& EventSystem::getStudents() const {
     return students;
 }
-// ============================================================
-// ORGANIZERS
+// ==================== ORGANIZERS=========================
 // ============================================================
 
-// ------------------------------------------------------------
-// addOrganizer
-// Adds a new organizer, but only if the ID is not already used.
-// ------------------------------------------------------------
+//============addOrganizer==================
+//Adds a new organizer, but only if the ID is not already used.
+//=========================================
 bool EventSystem::addOrganizer(const string& id, const string& name,
                                const string& email, const string& department) {
-    // Same duplicate rule as students: search first, create second.
+    //search first, create second.
     if (findOrganizer(id) != nullptr) {
         cout << "Error: an organizer with ID " << id << " already exists." << endl;
-        return false;   // nothing was added
+ return false;
     }
 
-    // make_unique builds the Organizer on the heap and wraps it in a
-    // unique_ptr. push_back moves ownership into the vector.
+    //make_unique builds the Organizer on the heap and wraps it in a
+    //unique_ptr. push_back moves ownership into the vector.
     organizers.push_back(make_unique<Organizer>(id, name, email, department));
     return true;
 }
 
-// ------------------------------------------------------------
-// findOrganizer
-// Linear search by ID. Returns nullptr when nobody matches.
-// ------------------------------------------------------------
+//=============findOrganizer=====================
+//Linear search by ID, returns nullptr when nobody matches.
+//===============================================
 Organizer* EventSystem::findOrganizer(const string& id) const {
     for (const auto& o : organizers) {
-        // NOTE: Organizer names its ID getter getOrganizerID(),
-        // while Student uses getId(). Same idea, different name.
+        //organizer names its ID getter getOrganizerID(),
+        //while Student uses getId(). Same idea, different name.
         if (o->getOrganizerID() == id) {
             return o.get();   // plain pointer, ownership stays here
         }
@@ -114,10 +111,9 @@ Organizer* EventSystem::findOrganizer(const string& id) const {
     return nullptr;
 }
 
-// ------------------------------------------------------------
-// displayOrganizer
-// Prints one organizer, or a message if the ID doesn't exist.
-// ------------------------------------------------------------
+//=================displayOrganizer===================
+//
+//=================================================
 void EventSystem::displayOrganizer(const string& id) const {
     Organizer* o = findOrganizer(id);
     if (o == nullptr) {       // always check before using a pointer
@@ -127,10 +123,9 @@ void EventSystem::displayOrganizer(const string& id) const {
     o->display();
 }
 
-// ------------------------------------------------------------
-// displayAllOrganizers
-// Prints every organizer, numbered.
-// ------------------------------------------------------------
+//================displayAllOrganizers==============
+//Prints every organizer numbered.
+//=================================================
 void EventSystem::displayAllOrganizers() const {
     if (organizers.empty()) {
         cout << "No organizers in the system." << endl;
@@ -144,37 +139,33 @@ void EventSystem::displayAllOrganizers() const {
     }
 }
 
-// ------------------------------------------------------------
-// getOrganizers
+//==============getOrganizers======================
 // Read-only access for the FileManager code (saving to a file).
-// ------------------------------------------------------------
+//============================================
 const vector<unique_ptr<Organizer>>& EventSystem::getOrganizers() const {
     return organizers;
 }
 
-// ============================================================
-// EVENTS
+//====================EVENTS=========================
 // ============================================================
 
-// ------------------------------------------------------------
-// addEvent
-// Takes ownership of an event that the caller already built.
-// Rejects it if the ID is taken or the organizer does not exist.
-// ------------------------------------------------------------
+//===============addEvent=========================
+//Takes ownership of an event that the caller already built.
+//Rejects it if the ID is taken or the organizer does not exist.
+//================================================
 bool EventSystem::addEvent(unique_ptr<Event> event) {
     if (event == nullptr) {
         cout << "Error: no event was provided." << endl;
         return false;
     }
 
-    // Duplicate ID check, same rule as students and organizers.
+ //Duplicate ID check
     if (findEvent(event->getEventID()) != nullptr) {
         cout << "Error: an event with ID " << event->getEventID() << " already exists." << endl;
         return false;
     }
 
-    // An event stores only its organizer's ID, so we check here that
-    // this organizer really exists.
+    //we check here that this organizer really exists.
     if (findOrganizer(event->getOrganizerID()) == nullptr) {
         cout << "Error: organizer " << event->getOrganizerID() << " does not exist." << endl;
         return false;
@@ -186,10 +177,9 @@ bool EventSystem::addEvent(unique_ptr<Event> event) {
     return true;
 }
 
-// ------------------------------------------------------------
-// findEvent
+//================findEvent=====================
 // Linear search by ID. Returns nullptr when nothing matches.
-// ------------------------------------------------------------
+// ----------------------------------------
 Event* EventSystem::findEvent(const string& id) const {
     for (const auto& e : events) {
         if (e->getEventID() == id) {
@@ -199,11 +189,10 @@ Event* EventSystem::findEvent(const string& id) const {
     return nullptr;
 }
 
-// ------------------------------------------------------------
-// displayEvent
-// Prints one event. displayDetails() is virtual, so the right
-// subclass version runs even though we only hold an Event pointer.
-// ------------------------------------------------------------
+//=====================displayEvent=====================
+//Prints one event. displayDetails() is virtual, so the right
+//subclass version runs even though we only hold an Event pointer.
+//============================================
 void EventSystem::displayEvent(const string& id) const {
     Event* e = findEvent(id);
     if (e == nullptr) {
@@ -213,10 +202,9 @@ void EventSystem::displayEvent(const string& id) const {
     e->displayDetails();
 }
 
-// ------------------------------------------------------------
-// displayAllEvents
+//===========displayAllEvents===================
 // Prints every event, numbered (polymorphism again).
-// ------------------------------------------------------------
+//=========================================
 void EventSystem::displayAllEvents() const {
     if (events.empty()) {
         cout << "No events in the system." << endl;
@@ -230,10 +218,128 @@ void EventSystem::displayAllEvents() const {
     }
 }
 
-// ------------------------------------------------------------
-// getEvents
+//================getEvents===================
 // Read-only access for saving to a file and for reports.
-// ------------------------------------------------------------
+//============================================
 const vector<unique_ptr<Event>>& EventSystem::getEvents() const {
     return events;
+}
+
+//==================== REGISTRATIONS=========================
+// ============================================================
+
+//=============registerStudent=====================
+//Looks up the student and the event, hands them to the
+//RegistrationManager (which enforces the rules), and turns the
+//result into a message. The manager prints nothing itself.
+//=========================================
+bool EventSystem::registerStudent(const string& studentId, const string& eventId,
+                                  const string& date) {
+    Student* student = findStudent(studentId);   // nullptr if not found
+    Event* event = findEvent(eventId);           // nullptr if not found
+
+    //manager handles nullptr, duplicates, capacity and a blank date.
+    RegistrationResult result = registrationManager.registerStudent(student, event, date);
+
+    switch (result) {
+        case RegistrationResult::Success:
+            cout << "Registration successful!" << endl;
+            cout << "Student: " << student->getName() << endl;
+            cout << "Event: " << event->getName() << endl;
+            return true;
+        case RegistrationResult::StudentNotFound:
+            cout << "Error: student not found." << endl;
+            break;
+        case RegistrationResult::EventNotFound:
+            cout << "Error: event not found." << endl;
+            break;
+        case RegistrationResult::DuplicateRegistration:
+            cout << "Error: this student is already registered for this event." << endl;
+            break;
+        case RegistrationResult::EventFull:
+            cout << "Error: this event is full." << endl;
+            break;
+        case RegistrationResult::InvalidDate:
+            cout << "Error: a registration date is required." << endl;
+            break;
+    }
+    return false;
+}
+
+//================cancelRegistration=================
+// Delegates to the manager and reports the outcome.
+//====================================================
+bool EventSystem::cancelRegistration(const string& studentId, const string& eventId) {
+    if (registrationManager.cancelRegistration(studentId, eventId)) {
+        cout << "Registration canceled." << endl;
+        return true;
+    }
+    cout << "Error: no active registration found for that student and event." << endl;
+    return false;
+}
+
+//===========displayStudentRegistrations===================
+// The manager returns event IDs; we look each one up for its name.
+//=========================================
+void EventSystem::displayStudentRegistrations(const string& studentId) const {
+    Student* student = findStudent(studentId);
+    if (student == nullptr) {
+        cout << "Student not found." << endl;
+        return;
+    }
+
+    vector<string> eventIds = registrationManager.getEventIdsForStudent(studentId);
+    cout << "Student: " << student->getName() << endl;
+    if (eventIds.empty()) {
+        cout << "No registered events." << endl;
+        return;
+    }
+
+    cout << "Registered Events:" << endl;
+    int count = 1;
+    for (const string& id : eventIds) {
+        Event* event = findEvent(id);
+        cout << count << ". " << (event != nullptr ? event->getName() : id) << endl;
+        count++;
+    }
+}
+
+// ==============displayEventAttendees==============
+// The manager returns student IDs; we look each one up for a name.
+//===================================================
+void EventSystem::displayEventAttendees(const string& eventId) const {
+    Event* event = findEvent(eventId);
+    if (event == nullptr) {
+        cout << "Event not found." << endl;
+        return;
+    }
+
+    vector<string> studentIds = registrationManager.getStudentIdsForEvent(eventId);
+    cout << "Event: " << event->getName() << endl;
+    if (studentIds.empty()) {
+        cout << "No registered students." << endl;
+        return;
+    }
+
+    cout << "Registered Students:" << endl;
+    int count = 1;
+    for (const string& id : studentIds) {
+        Student* student = findStudent(id);
+        cout << count << ". " << (student != nullptr ? student->getName() : id) << endl;
+        count++;
+    }
+}
+
+//==========getRegisteredCount / getRegistrationManager=====
+//=========================================
+int EventSystem::getRegisteredCount(const string& eventId) const {
+    return registrationManager.getRegistrationCount(eventId);
+}
+
+RegistrationManager& EventSystem::getRegistrationManager() {
+    return registrationManager;
+}
+
+const RegistrationManager& EventSystem::getRegistrationManager() const {
+    return registrationManager;
 }
