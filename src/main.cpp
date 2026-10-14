@@ -27,10 +27,12 @@ int readInt(const string& prompt)
     while (true)
     {
         string text = readLine(prompt);
+
         try
         {
             size_t used = 0;
             int value = stoi(text, &used);
+
             if (used == text.size())
             {
                 return value;
@@ -39,6 +41,7 @@ int readInt(const string& prompt)
         catch (...)
         {
         }
+
         cout << "Please enter a whole number." << endl;
     }
 }
@@ -51,7 +54,9 @@ void createEvent(EventSystem& system)
     cout << "2. Career" << endl;
     cout << "3. Club" << endl;
     cout << "4. Social" << endl;
+
     int type = readInt("Enter type: ");
+
     if (type < 1 || type > 4)
     {
         cout << "Invalid event type." << endl;
@@ -67,6 +72,7 @@ void createEvent(EventSystem& system)
     string organizerID = readLine("Enter organizer ID: ");
 
     int capacity = readInt("Enter capacity: ");
+
     if (capacity <= 0)
     {
         cout << "Capacity must be greater than 0." << endl;
@@ -74,33 +80,47 @@ void createEvent(EventSystem& system)
     }
 
     unique_ptr<Event> event;
+
     if (type == 1)
     {
         string department = readLine("Enter department: ");
         string speaker = readLine("Enter speaker: ");
-        event = make_unique<AcademicEvent>(id, name, description, date, time, location,
-                                           organizerID, capacity, department, speaker);
+
+        event = make_unique<AcademicEvent>(
+            id, name, description, date, time, location,
+            organizerID, capacity, department, speaker
+        );
     }
     else if (type == 2)
     {
         string company = readLine("Enter company name: ");
         string recruiter = readLine("Enter recruiter name: ");
-        event = make_unique<CareerEvent>(id, name, description, date, time, location,
-                                         organizerID, capacity, company, recruiter);
+
+        event = make_unique<CareerEvent>(
+            id, name, description, date, time, location,
+            organizerID, capacity, company, recruiter
+        );
     }
     else if (type == 3)
     {
         string club = readLine("Enter club name: ");
-        event = make_unique<ClubEvent>(id, name, description, date, time, location,
-                                       organizerID, capacity, club);
+
+        event = make_unique<ClubEvent>(
+            id, name, description, date, time, location,
+            organizerID, capacity, club
+        );
     }
     else
     {
         string theme = readLine("Enter theme: ");
         string food = readLine("Is food provided? (y/n): ");
+
         bool foodProvided = (food == "y" || food == "Y");
-        event = make_unique<SocialEvent>(id, name, description, date, time, location,
-                                         organizerID, capacity, theme, foodProvided);
+
+        event = make_unique<SocialEvent>(
+            id, name, description, date, time, location,
+            organizerID, capacity, theme, foodProvided
+        );
     }
 
     // addEvent prints its own error if the ID is taken or the organizer doesn't exist
@@ -110,67 +130,35 @@ void createEvent(EventSystem& system)
     }
 }
 
-void searchEvents(const EventSystem& system)
-{
-    string search = readLine("Enter part of the event name: ");
-
-    bool foundAny = false;
-    for (const auto& event : system.getEvents())
-    {
-        if (event->getName().find(search) != string::npos)
-        {
-            cout << "-----------------" << endl;
-            event->displayDetails();
-            foundAny = true;
-        }
-    }
-
-    if (!foundAny)
-    {
-        cout << "No events matched \"" << search << "\"." << endl;
-    }
-}
-
-void viewOrganizerEvents(const EventSystem& system)
-{
-    string id = readLine("Enter organizer ID: ");
-    if (system.findOrganizer(id) == nullptr)
-    {
-        cout << "Organizer not found." << endl;
-        return;
-    }
-
-    bool foundAny = false;
-    for (const auto& event : system.getEvents())
-    {
-        if (event->getOrganizerID() == id)
-        {
-            cout << "- " << event->getEventID() << ": " << event->getName() << endl;
-            foundAny = true;
-        }
-    }
-
-    if (!foundAny)
-    {
-        cout << "This organizer has no events." << endl;
-    }
-}
-
 void showReports(const EventSystem& system)
 {
     cout << "1. Events with available capacity" << endl;
     cout << "2. Full events" << endl;
     cout << "3. Registrations per event" << endl;
     cout << "4. Students registered for multiple events" << endl;
+
     int report = readInt("Enter report: ");
 
     switch (report)
     {
-        case 1: system.reportEventsWithSpace(); break;
-        case 2: system.reportFullEvents(); break;
-        case 3: system.reportRegistrationsPerEvent(); break;
-        case 4: system.reportStudentsInMultipleEvents(); break;
-        default: cout << "Invalid report." << endl;
+        case 1:
+            system.reportEventsWithSpace();
+            break;
+
+        case 2:
+            system.reportFullEvents();
+            break;
+
+        case 3:
+            system.reportRegistrationsPerEvent();
+            break;
+
+        case 4:
+            system.reportStudentsInMultipleEvents();
+            break;
+
+        default:
+            cout << "Invalid report." << endl;
     }
 }
 
@@ -180,7 +168,7 @@ int main()
     EventSystem system;
     FileManager files;
 
-    // Load everything saved from last time (FileManager handles the load order)
+    // Load everything saved from last time
     files.loadAll(system);
 
     int choice;
@@ -222,6 +210,7 @@ int main()
                 {
                     cout << "Student added successfully." << endl;
                 }
+
                 break;
             }
 
@@ -239,8 +228,11 @@ int main()
                 break;
 
             case 5:
-                searchEvents(system);
+            {
+                string search = readLine("Enter part of the event name: ");
+                system.searchEventsByName(search);
                 break;
+            }
 
             // Registrations
             case 6:
@@ -248,7 +240,9 @@ int main()
                 string studentId = readLine("Enter student ID: ");
                 string eventId = readLine("Enter event ID: ");
                 string date = readLine("Enter registration date (YYYY-MM-DD): ");
+
                 system.registerStudent(studentId, eventId, date);
+
                 break;
             }
 
@@ -256,16 +250,22 @@ int main()
             {
                 string studentId = readLine("Enter student ID: ");
                 string eventId = readLine("Enter event ID: ");
+
                 system.cancelRegistration(studentId, eventId);
+
                 break;
             }
 
             case 8:
-                system.displayStudentRegistrations(readLine("Enter student ID: "));
+                system.displayStudentRegistrations(
+                    readLine("Enter student ID: ")
+                );
                 break;
 
             case 9:
-                system.displayEventAttendees(readLine("Enter event ID: "));
+                system.displayEventAttendees(
+                    readLine("Enter event ID: ")
+                );
                 break;
 
             // Organizers
@@ -280,6 +280,7 @@ int main()
                 {
                     cout << "Organizer added successfully." << endl;
                 }
+
                 break;
             }
 
@@ -288,8 +289,11 @@ int main()
                 break;
 
             case 12:
-                viewOrganizerEvents(system);
+            {
+                string organizerId = readLine("Enter organizer ID: ");
+                system.displayEventsByOrganizer(organizerId);
                 break;
+            }
 
             // Reports
             case 13:
@@ -298,7 +302,6 @@ int main()
 
             // Exit
             case 0:
-                // Save everything before closing
                 if (files.saveAll(system))
                 {
                     cout << "Data saved." << endl;
@@ -307,6 +310,7 @@ int main()
                 {
                     cout << "Error: could not save data. Make sure the data folder exists." << endl;
                 }
+
                 cout << "Exiting program..." << endl;
                 break;
 
