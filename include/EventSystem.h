@@ -94,6 +94,18 @@ public:
     RegistrationManager& getRegistrationManager();
     const RegistrationManager& getRegistrationManager() const;
 
+    //===========Reports==========
+    //Events that still have open spots (shows registered / capacity).
+    void reportEventsWithSpace() const;
+
+    //Events that have no spots left.
+    void reportFullEvents() const;
+
+    //Every event with how many students are registered.
+    void reportRegistrationsPerEvent() const;
+
+    //Students registered for two or more events.
+    void reportStudentsInMultipleEvents() const;
 };
 
 #endif
