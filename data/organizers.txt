@@ -1,0 +1,3 @@
+O1|Karen Mitchell|kmitchell@ivc.edu|Engineering Department
+O2|James Ortiz|jortiz@ivc.edu|Career Center
+O3|Priya Shah|pshah@ivc.edu|Student Life
