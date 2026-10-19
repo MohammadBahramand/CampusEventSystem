@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include <utility>
+
 #include "Menu.h"
 #include "AcademicEvent.h"
 #include "CareerEvent.h"
@@ -16,8 +16,9 @@ Menu::Menu(EventSystem& system) : system(system) {}
 //Input helpers 
 string Menu::readLine(const string& prompt) const
 {
-    cout << prompt;
     string text;
+
+    cout << prompt;
     getline(cin, text);
 
     return text;
@@ -40,9 +41,7 @@ int Menu::readInt(const string& prompt) const
                 return value;
             }
         }
-        catch (...)
-        {
-        }
+        catch (...) {}
 
         cout << "Please enter a whole number." << endl;
     }
@@ -111,7 +110,8 @@ void Menu::createEvent()
         string department = readLine("Enter department: ");
         string speaker = readLine("Enter speaker: ");
 
-        event = make_unique<AcademicEvent>(
+        event = make_unique<AcademicEvent>
+        (
             id, name, description, date, time, location,
             organizerID, capacity, department, speaker
         );
@@ -121,7 +121,8 @@ void Menu::createEvent()
         string company = readLine("Enter company name: ");
         string recruiter = readLine("Enter recruiter name: ");
 
-        event = make_unique<CareerEvent>(
+        event = make_unique<CareerEvent>
+        (
             id, name, description, date, time, location,
             organizerID, capacity, company, recruiter
         );
@@ -130,7 +131,8 @@ void Menu::createEvent()
     {
         string club = readLine("Enter club name: ");
 
-        event = make_unique<ClubEvent>(
+        event = make_unique<ClubEvent>
+        (
             id, name, description, date, time, location,
             organizerID, capacity, club
         );
@@ -142,14 +144,15 @@ void Menu::createEvent()
 
         bool foodProvided = (food == "y" || food == "Y");
 
-        event = make_unique<SocialEvent>(
+        event = make_unique<SocialEvent>
+        (
             id, name, description, date, time, location,
             organizerID, capacity, theme, foodProvided
         );
     }
 
     // addEvent prints its own error if the ID is taken or the organizer doesn't exist
-    if (system.addEvent(std::move(event)))
+    if (system.addEvent(move(event)))
     {
         cout << "Event created successfully." << endl;
     }
@@ -187,9 +190,7 @@ void Menu::showReports() const
     }
 }
 
-// Main menu loop 
-// Shows the menu and runs the user's choice until they pick 0.
-// Saving happens in main after this returns.
+// Shows the menu and runs until they pick 0
 void Menu::run()
 {
     int choice;
@@ -303,7 +304,7 @@ void Menu::run()
                 showReports();
                 break;
 
-            // Exit (main saves after run() ends)
+            // Exit 
             case 0:
                 cout << "Exiting program..." << endl;
                 break;
