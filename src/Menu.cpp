@@ -152,7 +152,7 @@ void Menu::createEvent()
     }
 
     // addEvent prints its own error if the ID is taken or the organizer doesn't exist
-    if (system.addEvent(std::move(event)))
+    if (system.addEvent(move(event)))
     {
         cout << "Event created successfully." << endl;
     }
