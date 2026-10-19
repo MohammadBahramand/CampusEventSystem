@@ -16,7 +16,8 @@ We split the program so that each class has one clear job. No single class does 
 | `RegistrationManager` | Owns every `Registration`. Enforces the rules: no duplicates, no going over capacity, can only cancel an active registration. Answers questions like "how many people are in this event?" | Print anything to the screen |
 | `EventSystem` | Owns all students, organizers and events. Finds objects by ID, displays them, runs reports, and turns registration results into messages for the user | Read or write files |
 | `FileManager` | Reads and writes the four data files and rebuilds the objects on startup | Make decisions about registration rules |
-| `main.cpp` | Shows the menu, reads input, calls the classes above | Store any data |
+| `Menu` | Shows the menu, reads and checks the user's input, and calls `EventSystem` for each option | Store any data or apply any rules |
+| `main.cpp` | Starts the program: loads the data, runs the `Menu`, saves the data on exit | Contain any application logic |
 
 ## 2. Relationships Between Classes
 
@@ -31,6 +32,7 @@ classDiagram
     Registration ..> Event : eventId
     Event ..> Organizer : organizerID
     FileManager ..> EventSystem : loads / saves
+    Menu --> EventSystem : uses
     Event <|-- AcademicEvent
     Event <|-- CareerEvent
     Event <|-- ClubEvent
@@ -43,6 +45,7 @@ classDiagram
 - `EventSystem` owns exactly one `RegistrationManager` as a normal member variable.
 - `RegistrationManager` owns every `Registration`, stored by value in a `vector<Registration>`.
 - `FileManager` owns nothing. It is handed an `EventSystem` by reference when loading or saving.
+- `Menu` owns nothing either. It holds a reference to the `EventSystem` that `main` created, so the menu and the file loading/saving all work on the same data.
 
 **How objects refer to each other:**
 
@@ -177,11 +180,11 @@ We agreed on the class names and main function signatures first. That let each p
 | Area | Team member | Branch |
 |---|---|---|
 | `Student`, `EventSystem` storage, registration integration, reports, search | Mohammad Bahramand | `feature/student-management`, `feature/organizer-storage-clean`, `feature/event-storage`, `feature/registration-storage`, `feature/reports`, `feature/event-search` |
-| `Organizer`, main menu, UML diagram | Devon Nghiem | `feature/organizer`, `feature/MainMenu` |
+| `Organizer`, `Menu` class, UML diagram | Devon Nghiem | `feature/organizer`, `feature/MainMenu` |
 | `Event`, `AcademicEvent`, `ClubEvent` | viav0 | `feature/event-management` |
 | `CareerEvent`, `SocialEvent` | Mahir Altuntas | `feature/event-management` |
 | `Registration`, `RegistrationManager` | Abdullah Shafi | `feature/registration` |
-| `FileManager`, persistence, sample data, documentation | Jeremy Huang | `feature/file-storage` |
+| `FileManager`, persistence, sample data, documentation | Jeremy Huang | `feature/file-storage`, `feature/loadall`, `feature/sample-data`, `feature/docs` |
 
 Each feature was merged into `main` through a Pull Request so the rest of the team could review it.
 
@@ -192,3 +195,5 @@ Each feature was merged into `main` through a Pull Request so the rest of the te
 **Load order.** Events need their organizer to exist, and registrations need their student and event. The files therefore have to be loaded in a fixed order (organizers → students → events → registrations). `FileManager` has `loadAll()` and `saveAll()` functions that follow this order.
 
 **Integrating parallel work.** Some files were first uploaded to the wrong folders. For example, `SocialEvent.h` was placed in `src/` and the registration files were added at the top level, so they had to be moved into `include/` and `src/`. The menu branch also had to merge `main` into itself more than once as other features landed. Agreeing on the folder layout early and pulling `main` often made later merges smoother.
+
+**Keeping logic out of `main.cpp`.** Our first working version put a lot of code in `main.cpp`: searching events, finding an organizer's events, and the load/save order. The assignment says `main.cpp` should mainly start and coordinate the program. We moved each piece into the class it belongs to. Search and "events by organizer" went into `EventSystem` (`searchEventsByName`, `displayEventsByOrganizer`). The load/save order went into `FileManager` (`loadAll`, `saveAll`). The menu itself moved into a new `Menu` class. `main.cpp` went from over 300 lines to about 30.
