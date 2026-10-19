@@ -18,7 +18,7 @@ The program checks the rules for every registration. It refuses a registration i
 | Name | GitHub | Primary Responsibilities |
 |---|---|---|
 | Mohammad Bahramand | MohammadBahramand | Repository setup, `Student` class, `EventSystem` (storage for students, organizers and events, registration integration, reports, event search), reviewing and merging PRs |
-| Devon Nghiem | DevonNghiem | `Organizer` class, main menu and console interface (`main.cpp`), UML class diagram |
+| Devon Nghiem | DevonNghiem | `Organizer` class, `Menu` class and console interface, UML class diagram |
 | Jeremy Huang | Synsepalum | `FileManager` and data persistence (loading and saving all four data files), sample data, documentation |
 | Vikunwat Lav | viav0 | `Event` base class, `AcademicEvent`, `ClubEvent` |
 | Mahir Altuntas | mahiraltuntas | `CareerEvent`, `SocialEvent` |
@@ -30,7 +30,7 @@ The program checks the rules for every registration. It refuses a registration i
 - View all students
 - Create events of four types, each with its own extra details
 - View all events, with each event type showing its own details
-- Search events by name (matches part of the name)
+- Search events by name (matches part of the name, not case-sensitive)
 - Register a student for an event, with checks for:
   - student exists
   - event exists
@@ -62,8 +62,9 @@ The program checks the rules for every registration. It refuses a registration i
 | `RegistrationManager` | Owns all registrations and enforces the registration rules (duplicates, capacity, cancellation) |
 | `EventSystem` | Owns all students, organizers and events, and coordinates the rest of the program (lookups, displays, reports, search) |
 | `FileManager` | Reads and writes the data files and rebuilds the objects when the program starts |
+| `Menu` | Shows the menu, reads and checks the user's input, and calls `EventSystem` for each option |
 
-`main.cpp` shows the menu, reads the user's input and calls into these classes.
+`main.cpp` only starts the program: it loads the saved data, runs the `Menu`, and saves the data when the user exits.
 
 See [docs/DESIGN.md](docs/DESIGN.md) for the full design explanation and [docs/](docs/) for the UML class diagram.
 
@@ -143,7 +144,6 @@ On startup the files are loaded in this order: organizers, students, events, reg
 
 - Text fields cannot contain the `|` character because it is used to separate fields in the data files. A name with `|` in it gets saved incorrectly and is skipped the next time the program starts.
 - The program must be run from the repository's top folder, or it won't find `data/` and will not be able to save.
-- Event search is case-sensitive. Searching "robotics" will not find "Introduction to Robotics".
 - Dates and times are stored as text and are not checked for a valid format.
 - Students, organizers and events cannot be edited or deleted after they are added.
 - Data is only saved when exiting through the menu. Closing the window or crashing loses changes from that session.
